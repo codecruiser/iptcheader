@@ -12,13 +12,17 @@ class IPTCFiddler:
         # NOTE: be aware that recursive has its depth
         data_json = []
         for data in data_level.find_all(recursive=False):
-            data_json.append({
+            child_data = self.traverse_data(data)
+            node_data = {
                 "prefix": data.prefix,
                 "name": data.name,
                 "namespace": data.namespace,
-                "text": data.text,
-                "_data_": self.traverse_data(data)
-            })
+            }
+            if child_data:
+                node_data["_data_"] = child_data
+            else:
+                node_data["text"] = data.text
+            data_json.append(node_data)
         return data_json
 
     def extract_headers(self):
